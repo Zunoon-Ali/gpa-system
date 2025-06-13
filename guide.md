@@ -240,8 +240,126 @@ Now you can add dynamic behavior directly in HTML like:
 
 ---
 
-Let me know if you want me to generate a PDF or give this in a downloadable version too.
+---
+
+## 🌐 `public/index.html` — Frontend with Alpine.js
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </head>
+  <body>
+    <section id="header"></section>
+
+    <section id="content" class="container mt-3">
+      <div class="row">
+        <div class="col-md-12 pb-10" x-data="marksApp()" x-init="fetchMarks()">
+          <div class="table-wrapper">
+
+            <!-- GPA Table Display -->
+            <div x-data="gpaApp()" x-init="init()">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Batch</th>
+                    <th>Reg No</th>
+                    <th>Name</th>
+                    <th>GPA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="gpa in gpas" :key="gpa.regno">
+                    <tr>
+                      <td x-text="gpa.batch"></td>
+                      <td x-text="gpa.regno"></td>
+                      <td x-text="gpa.name"></td>
+                      <td x-text="gpa.gpa"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pagination Buttons -->
+          <div
+            class="buttons d-flex align-items-center justify-content-center gap-4 mt-2 mb-3 position-sticky bottom-0 bg-white p-2"
+          >
+            <button
+              @click="prevPage()"
+              :disabled="page === 1"
+              class="btn custom-btn"
+            >
+              Previous
+            </button>
+            <span class="fw-bold">
+              Page <span x-text="page"></span> of
+              <span x-text="totalPages"></span>
+            </span>
+            <button @click="nextPage()" class="btn custom-btn px-[20px]">
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="files.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+
+---
+
+## 📜 `public/app.js` — Alpine.js Logic to Fetch GPA
+
+```js
+function gpaApp() {
+  return {
+    gpas: [],
+    async fetchGPA() {
+      try {
+        const res = await fetch('/api/gpa');
+        this.gpas = await res.json();
+      } catch (e) {
+        console.error('Fetch GPA error:', e);
+      }
+    },
+    init() {
+      this.fetchGPA();
+    }
+  }
+}
+```
+
+This function uses Alpine.js' reactive syntax to fetch GPA data from the Express backend route `/api/gpa`.
+
+---
+
+## 🗂 GitHub Repo (Project Source Code)
+
+To explore or clone the full working project:
+
+🔗 **GitHub Repository:**
+[https://github.com/Zunoon-Ali/gpa-system](https://github.com/Zunoon-Ali/gpa-system)
+
+---
+
+this is  entire `guide.md`. Best of luck with your papers — no stress! 💪📚
+---
 
 this is my github repo  of this project if you want direct chapna for go for it but bhai paper hain pareshan na krna
 
-github:    https://github.com/Zunoon-Ali/gpa-system.git
+---
