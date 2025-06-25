@@ -1,94 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <script src="//unpkg.com/alpinejs" defer></script>
-  </head>
-  <body>
-    <section id="header"></section>
 
-    <section id="content" class="container mt-3">
-      <div class="row">
-        <div class="col-md-12 pb-10" x-data="marksApp()" x-init="fetchMarks()">
-          <div class="table-wrapper">
-            <!-- <table class="table table-bordered">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <script src="app.js"></script>
+  <title>Student GPA Summary</title>
+  <style>
+    html {
+      font-size: 0.85rem;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-              <thead class="table-dark position-sticky top-0">
-                <tr>
-                  <th scope="col">Mark ID</th>
-                  <th scope="col">Head ID</th>
-                  <th scope="col">Reg No</th>
-                  <th scope="col">Marks</th>
-                  <th scope="col">Recap ID</th>
-                </tr>
-              </thead>
-              <tbody>
-                <template x-for="(row, index) in marks" :key="row.mid || index">
-                  <tr>
-                    <th scope="row" x-text="row.mid"></th>
-                    <td x-text="row.hid"></td>
-                    <td x-text="row.regno"></td>
-                    <td x-text="row.marks"></td>
-                    <td x-text="row.rid"></td>
-                  </tr>
-                </template>
-              </tbody>
-            </table> -->
+    td, th {
+      padding: 8px;
+      text-align: left;
+    }
 
-            <div x-data="gpaApp()" x-init="init()">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Batch</th>
-                    <th>Reg No</th>
-                    <th>Name</th>
-                    <th>GPA</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <template x-for="gpa in gpas" :key="gpa.regno">
-                    <tr>
-                      <td x-text="gpa.batch"></td>
-                      <td x-text="gpa.regno"></td>
-                      <td x-text="gpa.name"></td>
-                      <td x-text="gpa.gpa"></td>
-                    </tr>
-                  </template>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div
-            class="buttons d-flex align-items-center justify-content-center gap-4 mt-2 mb-3 position-sticky bottom-0 bg-white p-2"
-          >
-            <button
-              @click="prevPage()"
-              :disabled="page === 1"
-              class="btn custom-btn"
-            >
-              Previous
-            </button>
-            <span class="fw-bold">
-              Page <span x-text="page"></span> of
-              <span x-text="totalPages"></span>
-            </span>
-            <button @click="nextPage()" class="btn custom-btn px-[20px]">
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+    table, th, tr, td {
+      border-collapse: collapse;
+      border: 1px solid #d3d3d3;
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="files.js"></script>
-    <script src="app.js"></script>
-  </body>
+    .col {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 10px;
+    }
+
+    .hdr th {
+      text-align: right;
+      padding-right: 5px;
+    }
+
+    h2 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+
+<body x-data="gpaApp()" x-init="init()">
+
+  <div class="col" x-show="gpas.length !== 0">
+    <h2>Student GPA Summary</h2>
+
+    <!-- ✅ Dropdown for Year Filter -->
+    <label for="year">Select Year: </label>
+    <select x-model="selectedYear" id="year">
+      <option value="">All Years</option>
+      <template x-for="yr in years" :key="yr">
+        <option :value="yr" x-text="yr"></option>
+      </template>
+    </select>
+
+    <!-- ✅ GPA Table -->
+    <table>
+      <tr>
+        <th>Reg No</th>
+        <th>Name</th>
+        <th>Year</th>
+        <th>Total Credits</th>
+        <th>Student GPA</th>
+        <th>Batch GPA</th>
+        <th>Grade</th>
+      </tr>
+      <template x-for="(gpa, index) in filteredAndSortedGPA()" :key="index">
+        <tr>
+          <td x-text="gpa.student_registration"></td>
+          <td x-text="gpa.student_name"></td>
+          <td x-text="gpa.year"></td>
+          <td x-text="gpa.total_credit_hours"></td>
+          <td x-text="gpa.student_annual_gpa"></td>
+          <td x-text="gpa.batch_gpa"></td>
+          <td x-text="gpa.overall_final_grade_for_year"></td>
+        </tr>
+      </template>
+    </table>
+  </div>
+
+  <!-- ✅ Pagination -->
+  <div class="col" style="margin-top: 1rem;">
+    <button @click="prevPage()" :disabled="page === 1">Previous</button>
+    Page <span x-text="page"></span> of <span x-text="totalPages()"></span>
+    <button @click="nextPage()" :disabled="page === totalPages()">Next</button>
+  </div>
+
+</body>
+
 </html>

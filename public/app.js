@@ -1,54 +1,54 @@
-// function marksApp() {
-//     return {
-//         marks: [],
-//         page: 1,
-//         totalPages: 1,
-//         showInsertModal: false,
-//         showEditModal: false,
-//         form: { hid: '', regno: '', marks: '', rid: '', mid: null },
-
-//         async fetchMarks() {
-//             try {
-//                 const res = await fetch(`/api/marks?page=${this.page}`);
-//                 const data = await res.json();
-//                 this.marks = data.rows;
-//                 this.totalPages = Math.ceil(data.total / 100); // assuming 100 per page
-//             } catch (e) {
-//                 console.error('Error:', e);
-//             }
-//         },
-
-//         nextPage() {
-//             if (this.page < this.totalPages) {
-//                 this.page++;
-//                 this.fetchMarks();
-//             }
-//         },
-//         prevPage() {
-//             if (this.page > 1) {
-//                 this.page--;
-//                 this.fetchMarks();
-//             }
-//         },
-
-//     }
-
-// }
-// // 
-
 function gpaApp() {
   return {
     gpas: [],
-    async fetchGPA() {
+    years: [],
+    selectedYear: '',
+    page: 1,
+    perPage: 10,
+
+    async init() {
       try {
         const res = await fetch('/api/gpa');
-        this.gpas = await res.json();
-      } catch (e) {
-        console.error('Fetch GPA error:', e);
+        const data = await res.json();
+        this.gpas = data;
+        this.extractYears();
+      } catch (err) {
+        console.error('Error fetching GPA:', err);
       }
     },
-    init() {
-      this.fetchGPA();
+
+    extractYears() {
+      const yearSet = new Set(this.gpas.map(g => g.year));
+      this.years = Array.from(yearSet).sort();
+    },
+
+    filteredAndSortedGPA() {
+      let filtered = [...this.gpas];
+      if (this.selectedYear) {
+        const selected = filtered.filter(g => g.year === this.selectedYear);
+        const rest = filtered.filter(g => g.year !== this.selectedYear);
+        filtered = [...selected, ...rest];
+      }
+
+      const start = (this.page - 1) * this.perPage;
+      return filtered.slice(start, start + this.perPage);
+    },
+
+    totalPages() {
+      let count = this.gpas.length;
+      if (this.selectedYear) {
+        count = this.gpas.filter(g => g.year === this.selectedYear).length + 
+                this.gpas.filter(g => g.year !== this.selectedYear).length;
+      }
+      return Math.ceil(count / this.perPage);
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages()) this.page++;
+    },
+
+    prevPage() {
+      if (this.page > 1) this.page--;
     }
   }
 }
