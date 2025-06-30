@@ -87,7 +87,29 @@
     Page <span x-text="page"></span> of <span x-text="totalPages()"></span>
     <button @click="nextPage()" :disabled="page === totalPages()">Next</button>
   </div>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBajF3cganc5s42ljWreIWrZQ62YjAojTE",
+    authDomain: "batch-wise-gpa.firebaseapp.com",
+    projectId: "batch-wise-gpa",
+    storageBucket: "batch-wise-gpa.firebasestorage.app",
+    messagingSenderId: "525439140486",
+    appId: "1:525439140486:web:cbc396f98e52c401800707",
+    measurementId: "G-MK1QXZBGTB"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 
 </html>

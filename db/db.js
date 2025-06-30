@@ -3,16 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { Pool } = pg;
+// Function to get a new client connection
+async function getDbClient() {
+  const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
 
-const db = new Pool({
-    connectionString:process.env.DATABASE_URL,
-    ssl:{
-        rejectUnauthorized : false,
-    }
-})
+  await client.connect();
+  return client;
+}
 
-export default db;
-
-// This code sets up a PostgreSQL database connection pool using the 'pg' library, loading credentials from environment variables via 'dotenv'.
-// The 'pool' object facilitates efficient database interactions, including queries and transactions, with SSL configured to allow self-signed certificates for development.
+export default getDbClient;
